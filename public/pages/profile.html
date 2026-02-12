@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile — HabitFlow</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+</head>
+<body class="app-page">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-activity"></i><span>HabitFlow</span></div>
+    <ul class="sidebar-nav">
+      <li><a href="dashboard.html"><i class="bi bi-grid-1x2"></i><span>Dashboard</span></a></li>
+      <li><a href="habits.html"><i class="bi bi-check2-circle"></i><span>My Habits</span></a></li>
+      <li><a href="progress.html"><i class="bi bi-bar-chart-line"></i><span>Progress</span></a></li>
+      <li><a href="profile.html" class="active"><i class="bi bi-person-circle"></i><span>Profile</span></a></li>
+    </ul>
+    <div class="sidebar-bottom">
+      <a href="#" onclick="logout()" class="sidebar-logout"><i class="bi bi-box-arrow-left"></i><span>Logout</span></a>
+    </div>
+  </nav>
+
+  <!-- Mobile Nav -->
+  <nav class="mobile-nav d-lg-none">
+    <a href="dashboard.html"><i class="bi bi-grid-1x2"></i><span>Home</span></a>
+    <a href="habits.html"><i class="bi bi-check2-circle"></i><span>Habits</span></a>
+    <a href="progress.html"><i class="bi bi-bar-chart-line"></i><span>Progress</span></a>
+    <a href="profile.html" class="active"><i class="bi bi-person-circle"></i><span>Profile</span></a>
+  </nav>
+
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h2 class="page-title">Profile</h2>
+        <p class="page-subtitle">Manage your account settings</p>
+      </div>
+    </header>
+
+    <!-- Alert -->
+    <div id="profileAlert" class="alert d-none mb-4"></div>
+
+    <div class="row g-4">
+      <!-- Avatar & Info Card -->
+      <div class="col-lg-4">
+        <div class="card-hf text-center">
+          <div class="avatar-wrapper mb-3">
+            <div class="avatar-ring">
+              <div class="avatar-circle" id="avatarDisplay">
+                <span id="avatarInitials">?</span>
+              </div>
+            </div>
+            <button class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()">
+              <i class="bi bi-camera-fill"></i>
+            </button>
+            <input type="file" id="avatarInput" class="d-none" accept="image/*" onchange="updateAvatar(this)"/>
+          </div>
+          <h4 class="fw-bold" id="profileDisplayName">Loading...</h4>
+          <p class="text-muted small" id="profileDisplayEmail">—</p>
+          <div class="role-badge mt-2" id="profileRole">user</div>
+
+          <hr class="hf-divider my-3"/>
+
+          <!-- Profile Stats -->
+          <div class="row g-2 text-center">
+            <div class="col-4">
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="psHabits">0</div>
+                <div class="profile-stat-label">Habits</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="psStreak">0</div>
+                <div class="profile-stat-label">Streak</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="profile-stat">
+                <div class="profile-stat-value" id="psDays">0</div>
+                <div class="profile-stat-label">Days</div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="hf-divider my-3"/>
+
+          <!-- Achievements -->
+          <h6 class="fw-500 text-start mb-3">Achievements</h6>
+          <div id="achievementsList" class="achievements-grid">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Forms -->
+      <div class="col-lg-8">
+        <!-- Edit Profile -->
+        <div class="card-hf mb-4">
+          <div class="card-hf-header">
+            <h5><i class="bi bi-person me-2 text-accent"></i>Edit Profile</h5>
+          </div>
+          <form id="profileForm" onsubmit="updateProfile(event)">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-500">Username</label>
+                <input type="text" class="form-control hf-input" id="editUsername" placeholder="Your username" required/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-500">Email Address</label>
+                <input type="email" class="form-control hf-input" id="editEmail" placeholder="your@email.com" required/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-500">First Name</label>
+                <input type="text" class="form-control hf-input" id="editFirstName" placeholder="Optional"/>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-500">Last Name</label>
+                <input type="text" class="form-control hf-input" id="editLastName" placeholder="Optional"/>
+              </div>
+              <div class="col-12">
+                <label class="form-label fw-500">Bio</label>
+                <textarea class="form-control hf-input" id="editBio" rows="2" placeholder="Tell us a bit about yourself..."></textarea>
+              </div>
+              <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary-hf">
+                  <i class="bi bi-check2 me-1"></i>Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="card-hf mb-4">
+          <div class="card-hf-header">
+            <h5><i class="bi bi-shield-lock me-2 text-accent"></i>Change Password</h5>
+          </div>
+          <form id="passwordForm" onsubmit="changePassword(event)">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-500">Current Password</label>
+                <div class="position-relative">
+                  <input type="password" class="form-control hf-input" id="currentPass" required/>
+                  <button type="button" class="btn-eye" onclick="togglePassword('currentPass')">
+                    <i class="bi bi-eye" id="currentPassEye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-500">New Password</label>
+                <div class="position-relative">
+                  <input type="password" class="form-control hf-input" id="newPass" minlength="6" required/>
+                  <button type="button" class="btn-eye" onclick="togglePassword('newPass')">
+                    <i class="bi bi-eye" id="newPassEye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-500">Confirm New Password</label>
+                <div class="position-relative">
+                  <input type="password" class="form-control hf-input" id="confirmNewPass" required/>
+                  <button type="button" class="btn-eye" onclick="togglePassword('confirmNewPass')">
+                    <i class="bi bi-eye" id="confirmNewPassEye"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-12 d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary-hf">
+                  <i class="bi bi-lock me-1"></i>Update Password
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card-hf mb-4">
+          <div class="card-hf-header">
+            <h5><i class="bi bi-sliders me-2 text-accent"></i>Preferences</h5>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-500">Daily Reminder</label>
+              <input type="time" class="form-control hf-input" id="reminderTime" value="08:00"/>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-500">Week Starts On</label>
+              <select class="form-select hf-input" id="weekStart">
+                <option value="0">Sunday</option>
+                <option value="1" selected>Monday</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between pref-toggle">
+                <div>
+                  <div class="fw-500">Push Notifications</div>
+                  <div class="text-muted small">Get reminded to complete your habits</div>
+                </div>
+                <div class="form-check form-switch ms-3">
+                  <input class="form-check-input hf-switch" type="checkbox" id="notifToggle" checked/>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex align-items-center justify-content-between pref-toggle">
+                <div>
+                  <div class="fw-500">Weekly Summary Email</div>
+                  <div class="text-muted small">Receive a summary of your week every Sunday</div>
+                </div>
+                <div class="form-check form-switch ms-3">
+                  <input class="form-check-input hf-switch" type="checkbox" id="summaryToggle"/>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 d-flex justify-content-end">
+              <button class="btn btn-primary-hf" onclick="savePreferences()">
+                <i class="bi bi-check2 me-1"></i>Save Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="card-hf card-danger">
+          <div class="card-hf-header">
+            <h5><i class="bi bi-exclamation-triangle me-2 text-danger"></i>Danger Zone</h5>
+          </div>
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <div class="fw-500">Delete Account</div>
+              <div class="text-muted small">Permanently delete your account and all data</div>
+            </div>
+            <button class="btn btn-danger-hf" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+              Delete Account
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Delete Account Modal -->
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-hf">
+        <div class="modal-body text-center py-4">
+          <div class="fs-1 mb-3">⚠️</div>
+          <h5>Delete Your Account?</h5>
+          <p class="text-muted">This will permanently delete your account and all your habit data. There is no going back.</p>
+          <div class="mb-3">
+            <label class="form-label text-start w-100">Type <strong>DELETE</strong> to confirm:</label>
+            <input type="text" class="form-control hf-input text-center" id="deleteConfirmInput" placeholder="DELETE"/>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-secondary-hf flex-fill" data-bs-dismiss="modal">Cancel</button>
+            <button class="btn btn-danger-hf flex-fill" onclick="deleteAccount()">Delete Forever</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/profile.js"></script>
+</body>
+</html>
